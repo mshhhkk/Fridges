@@ -1,4 +1,4 @@
-﻿namespace Fridges.Persistance
+﻿namespace Fridges.Infrastructure
 {
     public class Class1
     {

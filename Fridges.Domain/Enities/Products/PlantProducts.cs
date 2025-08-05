@@ -2,8 +2,10 @@
 
 namespace Fridges.Domain.Enities.Products;
 
-class PlantProducts: Product
+public class PlantProducts
 {
-    public bool IsRipe { get; set; }
-    public PlantProductsTypes Type { get; set; }
+    public Product Product { get; set; }
+    public Guid ProductId { get; set; }
+    public bool IsOrganic { get; set; }
+    public PlantProductsType Type { get; set; }
 }

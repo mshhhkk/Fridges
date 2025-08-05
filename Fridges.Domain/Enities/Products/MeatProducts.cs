@@ -1,10 +1,12 @@
 ﻿using Fridges.Domain.Enums;
 namespace Fridges.Domain.Enities.Products;
 
-class MeatProducts:Product
+public class MeatProducts
 {
     public bool IsFrozen { get; set; }
     public MeatProductsType Type { get; set; }
+    public Product Product { get; set; }
+    public Guid ProductId { get; set; }
 }
 
 
