@@ -8,6 +8,13 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.2" />
+<<<<<<< Updated upstream
+=======
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+	  <ProjectReference Include="..\Fridges.Persistance\Fridges.Persistance.csproj" />
+	  <ProjectReference Include="..\Fridges.Infrastructure\Fridges.Infrastructure.csproj" />
+	  <ProjectReference Include="..\Fridges.Application\Fridges.Application.csproj" />
+>>>>>>> Stashed changes
   </ItemGroup>
 
 </Project>
