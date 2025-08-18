@@ -57,10 +57,9 @@ public class FridgesController : Controller
     public async Task<ActionResult> EditFridgeInfo(Guid id, [FromBody] FridgeDto fridgeDto)
     {
         await _service.EditFridge(id, fridgeDto);
-
-
         return Ok();
     }
 
+    
 
 }

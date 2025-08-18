@@ -13,6 +13,9 @@ public class Program
      
         builder.Services.AddScoped<IFridgeRepository, FridgeRepository>();
         builder.Services.AddScoped<IFridgeService, FridgeService>();
+        builder.Services.AddScoped<IProductRepository, ProductRepository>();
+        builder.Services.AddScoped<IProductService, ProductService>();
+        builder.Services.AddScoped<IRecipeRepository,RecipeRepository>();
         // Add services to the container.
         builder.Services.AddDatabase(builder.Configuration);
         builder.Services.AddControllers();
@@ -26,7 +29,7 @@ public class Program
         {
             app.MapOpenApi();
         }
-
+         
         app.UseHttpsRedirection();
 
         app.UseAuthorization();
