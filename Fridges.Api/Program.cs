@@ -16,6 +16,7 @@ public class Program
         builder.Services.AddScoped<IProductRepository, ProductRepository>();
         builder.Services.AddScoped<IProductService, ProductService>();
         builder.Services.AddScoped<IRecipeRepository,RecipeRepository>();
+        builder.Services.AddScoped<IRecipeService, RecipeService>();
         // Add services to the container.
         builder.Services.AddDatabase(builder.Configuration);
         builder.Services.AddControllers();

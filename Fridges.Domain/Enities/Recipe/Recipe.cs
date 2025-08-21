@@ -8,5 +8,5 @@ public class Recipe
     public string title { get; set; }
     public string Instructions { get; set; }
 
-    public ICollection<RecipeProduct> RecipeProducts { get; set; } = new List<RecipeProduct>();
+    public List<RecipeProduct> RecipeProducts { get; set; } = new List<RecipeProduct>();
 }
