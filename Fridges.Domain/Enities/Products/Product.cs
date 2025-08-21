@@ -4,14 +4,17 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Fridges.Domain.Enities.Recipe;
 
 namespace Fridges.Domain.Enities.Products;
 
-abstract class Product
+public class Product
 {
 
     public Guid Id { get; set; } = Guid.NewGuid();
 
+    public Fridge Fridge { get; set; }
+    public Guid FridgeId { get; set; }
     public DateOnly Release { get; set; }
 
     public DateOnly Expiration { get; set; }
@@ -19,4 +22,13 @@ abstract class Product
     public float Weight { get; set; }
 
     public bool IsFresh { get; set; }
+
+    public MeatProducts? meatProducts { get; set; }
+    public MilkProducts? milkProducts { get; set; }
+    public PlantProducts? plantProducts { get; set; }
+
+    public ProductType ProductType { get; set; }
+    public int ProductTypeId { get; set; }
+
+
 }

@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Fridges.Domain.Enities.Products;
+namespace Fridges.Domain.Enums;
 
-class TestProduct
+public enum ProductCategory
 {
+
 }

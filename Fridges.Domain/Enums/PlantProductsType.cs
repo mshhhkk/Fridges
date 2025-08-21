@@ -1,9 +1,9 @@
 ﻿
 namespace Fridges.Domain.Enums;
 
-public enum PlantProductsTypes
+public enum PlantProductsType
 {
-   Tomatoes,
+   Tomato,
    Cucumbers,
    Salad,
    Root,
