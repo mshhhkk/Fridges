@@ -19,12 +19,12 @@ public class FridgeService : IFridgeService
         _fridgesRepo = fridgeRepository;
     }
 
-    public async Task<List<Fridge>> GetAllFridges()
+    public async Task<List<Fridge>> GetAllAsync()
     {
         var fridges = await _fridgesRepo.GetAllAsync();
         return fridges;
     }
-    public async Task DeleteFridge(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
         var fridge = await _fridgesRepo.GetFridgeByIdAsync(id);
         if (fridge == null)
@@ -34,7 +34,7 @@ public class FridgeService : IFridgeService
         await _fridgesRepo.DeleteAsync(id);
 
     }
-    public async Task<Fridge> GetFridge(Guid id)
+    public async Task<Fridge> GetAsync(Guid id)
     {
         var fridge = await _fridgesRepo.GetFridgeByIdAsync(id);
         if (fridge == null)
@@ -43,7 +43,7 @@ public class FridgeService : IFridgeService
         }
         return fridge;
     }
-    public async Task<Fridge> AddFridge(FridgeDto dto)
+    public async Task<Fridge> AddAsync(FridgeDto dto)
     {
         var fridge = new Fridge
         {
@@ -56,7 +56,7 @@ public class FridgeService : IFridgeService
         await _fridgesRepo.AddAsync(fridge);
         return fridge;
     }
-    public async Task EditFridge(Guid id, FridgeDto dto)
+    public async Task EditAsync(Guid id, FridgeDto dto)
     {
         var fridge = await _fridgesRepo.GetFridgeByIdAsync(id);
         fridge.Id = id;
