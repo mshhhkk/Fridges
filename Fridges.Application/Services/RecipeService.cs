@@ -19,17 +19,20 @@ public class RecipeService:IRecipeService
     {
         _recipeRepository = recipeRepository;
     }
-    public async Task<List<Recipe>> GetAllRecipes()
+
+    public async Task<List<Recipe>> GetAllAsync()
     {
-        var recipes = await _recipeRepository.GetAllRecipesAsync();
+        var recipes = await _recipeRepository.GetAllAsync();
         return recipes;
     }
-    public async Task<Recipe> GetRecipeInfo(Guid id)
+
+    public async Task<Recipe> GetAsync(Guid id)
     {
-        var recipe = await _recipeRepository.GetRecipeByIdAsync(id);
+        var recipe = await _recipeRepository.GetByIdAsync(id);
         return recipe;
     }
-    public async Task<Recipe> AddRecipe(RecipeDto dto)
+
+    public async Task<Recipe> AddAsync(RecipeDto dto)
     {
         var recipe = new Recipe
         {
@@ -44,40 +47,37 @@ public class RecipeService:IRecipeService
             }).ToList()
         };
 
-        await _recipeRepository.AddRecipeAsync(recipe);
+        await _recipeRepository.AddAsync(recipe);
         return recipe;
     }
-    public async Task DeleteRecipe(Guid id)
+
+    public async Task DeleteAsync(Guid id)
     {
-        await _recipeRepository.DeleteRecipeByIdAsync(id);
+        await _recipeRepository.DeleteAsync(id);
     }
-    public async Task EditRecipe(Guid id, RecipeDto dto)
+
+    public async Task EditAsync(Guid id, RecipeDto dto)
     {
-        var recipe = await _recipeRepository.GetRecipeByIdAsync(id);
+        var recipe = await _recipeRepository.GetByIdAsync(id);
         recipe.title = dto.title;
         recipe.Instructions = dto.Instructions;
         List<RecipeProduct> products = dto.Products
-     .Select(p => new RecipeProduct
-     {
-         RecipeId = id,
-         ProductTypeId = p.ProductTypeId,
-         Quantity = p.Quantity,
-         unitType = p.UnitType
-     })
-     .ToList();
+             .Select(p => new RecipeProduct
+             {
+                 RecipeId = id,
+                 ProductTypeId = p.ProductTypeId,
+                 Quantity = p.Quantity,
+                 unitType = p.UnitType
+             })
+             .ToList();
 
-       await _recipeRepository.CheckRecipeProductsAsync(id, products);
-        await _recipeRepository.UpdateRecipeInfoAsync(recipe);
-        
-        
+        await _recipeRepository.CheckRecipeProductsAsync(id, products);
+        await _recipeRepository.UpdateAsync(recipe); 
     }
 
-    public async Task<List<RecipeProduct>> GetRecipeProducts(Guid id)
+    public async Task<List<RecipeProduct>> GetRecipeProductsAsync(Guid id)
     {
-        var products = await _recipeRepository.GetRecipeProductsById(id);
+        var products = await _recipeRepository.GetRecipeProductsByIdAsync(id);
         return products;
-    }
-
-
-    
+    } 
 }

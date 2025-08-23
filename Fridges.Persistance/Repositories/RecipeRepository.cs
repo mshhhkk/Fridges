@@ -17,7 +17,7 @@ public class RecipeRepository:IRecipeRepository
     {
         _context = context;
     }
-    public async Task<List<Recipe>> SearchRecipesByProductTypeId(int productTypeId)
+    public async Task<List<Recipe>> GetAllByProductTypeIdAsync(int productTypeId)
     {
         var recipes = await _context.Recipes
         .Include(r => r.RecipeProducts)
@@ -25,26 +25,26 @@ public class RecipeRepository:IRecipeRepository
         .ToListAsync();
         return recipes;
     }
-    public async Task<List<Recipe>> GetAllRecipesAsync()
+    public async Task<List<Recipe>> GetAllAsync()
     {
         return await _context.Recipes.ToListAsync();
     }
-    public async Task<Recipe> GetRecipeByIdAsync(Guid id)
+    public async Task<Recipe> GetByIdAsync(Guid id)
     {
         return await _context.Recipes.FirstOrDefaultAsync(r => r.Id == id);
     }
-    public async Task AddRecipeAsync(Recipe recipe)
+    public async Task AddAsync(Recipe recipe)
     {
         await _context.AddAsync(recipe);
         await _context.SaveChangesAsync();
     }
-    public async Task DeleteRecipeByIdAsync(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
         var recipe = await _context.Recipes.FirstOrDefaultAsync(r => r.Id == id);
         _context.Remove(recipe);
         await _context.SaveChangesAsync();
     }
-    public async Task UpdateRecipeInfoAsync(Recipe recipe)
+    public async Task UpdateAsync(Recipe recipe)
     {
         await _context.SaveChangesAsync();
     }
@@ -89,7 +89,7 @@ public class RecipeRepository:IRecipeRepository
         }
         await _context.SaveChangesAsync();
     }
-    public async Task<List<RecipeProduct>> GetRecipeProductsById(Guid id)
+    public async Task<List<RecipeProduct>> GetRecipeProductsByIdAsync(Guid id)
     {
         return await _context.RecipeProducts.Where(r => r.RecipeId == id).ToListAsync();
     }
