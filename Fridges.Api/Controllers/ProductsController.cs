@@ -8,31 +8,31 @@ namespace Fridges.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ProductController : Controller
+public class ProductsController : Controller
 {
-    private readonly IProductService _service;
-    public ProductController(IProductService service)
+    private readonly IProductService _productService;
+    public ProductsController(IProductService productService)
     {
-        _service = service;
+        _productService = productService;
     }
 
     [HttpGet]
     public async Task<IActionResult> ProductsList()
     {
-        var products = await _service.GetProductsList();
+        var products = await _productService.GetProductsList();
         return Ok(products);
     }
 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetProductInfo(Guid id)
     {
-        var product = await _service.GetProductInfo(id);
+        var product = await _productService.GetProductInfo(id);
         return Ok(product);
     }
     [HttpPost]
     public async Task<IActionResult> AddProduct([FromBody] ProductDto dto)
     {
-        var addedProduct = await _service.AddProduct(dto);
+        var addedProduct = await _productService.AddProduct(dto);
         return CreatedAtAction(
             nameof(GetProductInfo),
             new { id = addedProduct.Id },
@@ -42,32 +42,28 @@ public class ProductController : Controller
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> EditProductInfo(Guid id, [FromBody] EditProductDto dto)
     {
-        await _service.EditProductInfo(id,dto);
+        await _productService.EditProductInfo(id,dto);
         return Ok();
     }
 
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteProduct(Guid id)
     {
-        await _service.DeleteProduct(id);
+        await _productService.DeleteProduct(id);
         return NoContent();
     }
 
     [HttpGet("{id:guid}/recipes")]
     public async Task<IActionResult> SearchRecipesByProduct(Guid id)
     {
-        var recipe = await _service.SearchRecipesByProduct(id);
+        var recipe = await _productService.SearchRecipesByProduct(id);
         return Ok(recipe);
     }
 
     [HttpGet("search")]
     public async Task<IActionResult> SearchProductsByCategory([FromQuery] ProductCategory productCategory)
     {
-        var products = await _service.SearchProductsByCategory(productCategory);
+        var products = await _productService.SearchProductsByCategory(productCategory);
         return Ok(products);
     }
-
-     
-
-
 }

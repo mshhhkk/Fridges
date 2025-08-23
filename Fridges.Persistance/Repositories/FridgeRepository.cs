@@ -14,7 +14,7 @@ public class FridgeRepository : IFridgeRepository
         _context = context;
     }
 
-    public async Task<Fridge> GetFridgeByIdAsync(Guid id)
+    public async Task<Fridge> GetByIdAsync(Guid id)
     {
         var fridge = await _context.Fridges
             .FirstOrDefaultAsync(f => f.Id == id);
@@ -58,7 +58,7 @@ public class FridgeRepository : IFridgeRepository
             .FirstOrDefaultAsync();
         return name;
     }
-    public async Task<bool?> IsFreezerById(Guid id)
+    public async Task<bool?> IsFreezerByIdAsync(Guid id)
     {
         var isFreezer = await _context.Fridges
             .Where(f => f.Id == id)

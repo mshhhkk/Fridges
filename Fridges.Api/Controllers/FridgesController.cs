@@ -9,42 +9,37 @@ namespace Fridges.Api.Controllers;
 [Route("api/[controller]")]
 public class FridgesController : Controller
 {
-
-    private readonly IFridgeService _service;
-
-
-    public FridgesController(IFridgeService service)
+    private readonly IFridgeService _fridgeService;
+    public FridgesController(IFridgeService fridgeService)
     {
-        _service = service;
+        _fridgeService = fridgeService;
     }
-
 
     [HttpGet("{id}")]
     public async Task<ActionResult> GetFridgeInfo(Guid id)
     {
-        var fridge = await _service.GetFridge(id);
+        var fridge = await _fridgeService.GetFridge(id);
         return Ok(fridge);
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAllFridges()
     {
-        var fridges = await _service.GetAllFridges();
+        var fridges = await _fridgeService.GetAllFridges();
         return Ok(fridges);
     }
+
     [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(Guid id)
     {
-
-        await _service.DeleteFridge(id);
-
+        await _fridgeService.DeleteFridge(id);
         return NoContent();
     }
 
     [HttpPost]
     public async Task<ActionResult> AddFridge([FromBody] FridgeDto fridgeDto)
     {
-        var addedFridge = await _service.AddFridge(fridgeDto);
+        var addedFridge = await _fridgeService.AddFridge(fridgeDto);
 
         return CreatedAtAction(
             nameof(GetFridgeInfo),
@@ -52,14 +47,10 @@ public class FridgesController : Controller
             addedFridge);
     }
 
-
     [HttpPut("{id}")]
     public async Task<ActionResult> EditFridgeInfo(Guid id, [FromBody] FridgeDto fridgeDto)
     {
-        await _service.EditFridge(id, fridgeDto);
+        await _fridgeService.EditFridge(id, fridgeDto);
         return Ok();
     }
-
-    
-
 }

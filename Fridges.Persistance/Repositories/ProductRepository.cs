@@ -18,26 +18,26 @@ public class ProductRepository:IProductRepository
     {
         _context = context;
     }
-    public async Task<List<Product>> GetAllProductsAsync()
+    public async Task<List<Product>> GetAllAsync()
     {
        return await _context.Products.ToListAsync();
     }
-    public async Task<Product> GetProductByIdAsync(Guid id)
+    public async Task<Product> GetByIdAsync(Guid id)
     {
         var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == id);
         return product;
     }
-    public async Task AddProductAsync(Product product)
+    public async Task AddAsync(Product product)
     {
         await _context.AddAsync(product);
         await _context.SaveChangesAsync();
     }
-    public async Task UpdateProductAsync(Product product)
+    public async Task UpdateAsync(Product product)
     {
         _context.Update(product);
         await _context.SaveChangesAsync();
     }
-    public async Task DeleteProductAsync(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
         var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == id);
         _context.Remove(product);
@@ -51,7 +51,7 @@ public class ProductRepository:IProductRepository
             .FirstOrDefaultAsync();
         return productType.Id;
     }
-    public async Task<List<Product>> SearchProductsByCategoryAsync(ProductCategory productCategory)
+    public async Task<List<Product>> GetAllByCategoryAsync(ProductCategory productCategory)
     {
         var products = await _context.Products
             .Include(p => p.ProductType)

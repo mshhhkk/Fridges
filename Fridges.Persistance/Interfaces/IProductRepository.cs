@@ -11,11 +11,11 @@ namespace Fridges.Persistance.Interfaces;
 
 public interface IProductRepository
 {
-    Task<List<Product>> GetAllProductsAsync();
-    Task<Product> GetProductByIdAsync(Guid id);
-    Task AddProductAsync(Product product);
-    Task UpdateProductAsync(Product product);
-    Task DeleteProductAsync(Guid id);
+    Task<List<Product>> GetAllAsync();
+    Task<Product> GetByIdAsync(Guid id);
+    Task AddAsync(Product product);
+    Task UpdateAsync(Product product);
+    Task DeleteAsync(Guid id);
     Task<int> GetProductTypeIdAsync(Guid id);
-    Task<List<Product>> SearchProductsByCategoryAsync(ProductCategory productCategory);
+    Task<List<Product>> GetAllByCategoryAsync(ProductCategory productCategory);
 }

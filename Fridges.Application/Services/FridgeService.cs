@@ -26,7 +26,7 @@ public class FridgeService : IFridgeService
     }
     public async Task DeleteAsync(Guid id)
     {
-        var fridge = await _fridgesRepo.GetFridgeByIdAsync(id);
+        var fridge = await _fridgesRepo.GetByIdAsync(id);
         if (fridge == null)
         {
             throw new InvalidOperationException("Fridge doesn't exist!");
@@ -36,7 +36,7 @@ public class FridgeService : IFridgeService
     }
     public async Task<Fridge> GetAsync(Guid id)
     {
-        var fridge = await _fridgesRepo.GetFridgeByIdAsync(id);
+        var fridge = await _fridgesRepo.GetByIdAsync(id);
         if (fridge == null)
         {
             throw new InvalidOperationException("Fridge doesn't exist!");
@@ -58,7 +58,7 @@ public class FridgeService : IFridgeService
     }
     public async Task EditAsync(Guid id, FridgeDto dto)
     {
-        var fridge = await _fridgesRepo.GetFridgeByIdAsync(id);
+        var fridge = await _fridgesRepo.GetByIdAsync(id);
         fridge.Id = id;
         fridge.Name = dto.Name;
         fridge.Capacity = dto.Capacity;

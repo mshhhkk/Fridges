@@ -16,12 +16,12 @@ public class RecipeRepository:IRecipeRepository
     {
         _context = context;
     }
-    public async Task<List<Recipe>> SearchRecipesByProductTypeId(int productTypeId)
+    public async Task<List<Recipe>> GetAllByProductTypeAsync(int productTypeId)
     {
         var recipes = await _context.Recipes
-        .Include(r => r.RecipeProducts)
-        .Where(r => r.RecipeProducts.Any(rp => rp.ProductTypeId == productTypeId))
-        .ToListAsync();
+            .Include(r => r.RecipeProducts)
+            .Where(r => r.RecipeProducts.Any(rp => rp.ProductTypeId == productTypeId))
+            .ToListAsync();
         return recipes;
     }
 }

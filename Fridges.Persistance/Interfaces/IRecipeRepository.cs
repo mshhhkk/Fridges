@@ -9,5 +9,5 @@ namespace Fridges.Persistance.Interfaces;
 
 public interface IRecipeRepository
 {
-    Task<List<Recipe>> SearchRecipesByProductTypeId(int productTypeId);
+    Task<List<Recipe>> GetAllByProductTypeAsync(int productTypeId);
 }

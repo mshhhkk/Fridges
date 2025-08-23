@@ -9,9 +9,9 @@ namespace Fridges.Application.Interfaces;
 
 public interface IFridgeService
 {
-    Task<List<Fridge>> GetAllFridges();
-    Task DeleteFridge(Guid id);
-    Task<Fridge> GetFridge(Guid id);
-    Task<Fridge> AddFridge(FridgeDto dto);
-    Task EditFridge(Guid id, FridgeDto dto);
+    Task<List<Fridge>> GetAllAsync();
+    Task DeleteAsync(Guid id);
+    Task<Fridge> GetAsync(Guid id);
+    Task<Fridge> AddAsync(FridgeDto dto);
+    Task EditAsync(Guid id, FridgeDto dto);
 }
