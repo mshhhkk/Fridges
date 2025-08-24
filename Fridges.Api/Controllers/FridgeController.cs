@@ -1,65 +1,54 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Fridges.Application.Interfaces;
-using System.Threading.Tasks;
 using Fridges.Application.DTOs;
+using Fridges.Application.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 namespace Fridges.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
 public class FridgesController : Controller
 {
-
-    private readonly IFridgeService _service;
-
-
-    public FridgesController(IFridgeService service)
+    private readonly IFridgeService _fridgeService;
+    public FridgesController(IFridgeService fridgeService)
     {
-        _service = service;
+        _fridgeService = fridgeService;
     }
 
-
     [HttpGet("{id}")]
-    public async Task<ActionResult> GetFridgeInfo(Guid id)
+    public async Task<ActionResult> GetFridgeInfoAsync(Guid id)
     {
-        var fridge = await _service.GetFridge(id);
+        var fridge = await _fridgeService.GetAsync(id);
         return Ok(fridge);
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllFridges()
+    public async Task<IActionResult> GetAllFridgesAsync()
     {
-        var fridges = await _service.GetAllFridges();
+        var fridges = await _fridgeService.GetAllAsync();
         return Ok(fridges);
     }
+
     [HttpDelete("{id}")]
-    public async Task<ActionResult> Delete(Guid id)
+    public async Task<ActionResult> DeleteFridgeAsync(Guid id)
     {
-
-        await _service.DeleteFridge(id);
-
+        await _fridgeService.DeleteAsync(id);
         return NoContent();
     }
 
     [HttpPost]
-    public async Task<ActionResult> AddFridge([FromBody] FridgeDto fridgeDto)
+    public async Task<ActionResult> AddFridgeAsync([FromBody] FridgeDto fridgeDto)
     {
-        var addedFridge = await _service.AddFridge(fridgeDto);
+        var addedFridge = await _fridgeService.AddAsync(fridgeDto);
 
         return CreatedAtAction(
-            nameof(GetFridgeInfo),
+            nameof(GetFridgeInfoAsync),
             new { id = addedFridge.Id },
             addedFridge);
     }
 
-
     [HttpPut("{id}")]
-    public async Task<ActionResult> EditFridgeInfo(Guid id, [FromBody] FridgeDto fridgeDto)
+    public async Task<ActionResult> EditFridgeInfoAsync(Guid id, [FromBody] FridgeDto fridgeDto)
     {
-        await _service.EditFridge(id, fridgeDto);
+        await _fridgeService.EditAsync(id, fridgeDto);
         return Ok();
     }
-
-    
-
 }

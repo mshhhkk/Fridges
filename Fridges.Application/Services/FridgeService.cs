@@ -1,8 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Fridges.Application.DTOs;
 using Fridges.Application.Interfaces;
 using Fridges.Domain.Enities;
@@ -19,14 +14,15 @@ public class FridgeService : IFridgeService
         _fridgesRepo = fridgeRepository;
     }
 
-    public async Task<List<Fridge>> GetAllFridges()
+    public async Task<List<Fridge>> GetAllAsync()
     {
         var fridges = await _fridgesRepo.GetAllAsync();
         return fridges;
     }
-    public async Task DeleteFridge(Guid id)
+
+    public async Task DeleteAsync(Guid id)
     {
-        var fridge = await _fridgesRepo.GetFridgeByIdAsync(id);
+        var fridge = await _fridgesRepo.GetByIdAsync(id);
         if (fridge == null)
         {
             throw new InvalidOperationException("Fridge doesn't exist!");
@@ -34,16 +30,18 @@ public class FridgeService : IFridgeService
         await _fridgesRepo.DeleteAsync(id);
 
     }
-    public async Task<Fridge> GetFridge(Guid id)
+
+    public async Task<Fridge> GetAsync(Guid id)
     {
-        var fridge = await _fridgesRepo.GetFridgeByIdAsync(id);
+        var fridge = await _fridgesRepo.GetByIdAsync(id);
         if (fridge == null)
         {
             throw new InvalidOperationException("Fridge doesn't exist!");
         }
         return fridge;
     }
-    public async Task<Fridge> AddFridge(FridgeDto dto)
+
+    public async Task<Fridge> AddAsync(FridgeDto dto)
     {
         var fridge = new Fridge
         {
@@ -56,9 +54,10 @@ public class FridgeService : IFridgeService
         await _fridgesRepo.AddAsync(fridge);
         return fridge;
     }
-    public async Task EditFridge(Guid id, FridgeDto dto)
+
+    public async Task EditAsync(Guid id, FridgeDto dto)
     {
-        var fridge = await _fridgesRepo.GetFridgeByIdAsync(id);
+        var fridge = await _fridgesRepo.GetByIdAsync(id);
         fridge.Id = id;
         fridge.Name = dto.Name;
         fridge.Capacity = dto.Capacity;
@@ -70,5 +69,4 @@ public class FridgeService : IFridgeService
 
         await _fridgesRepo.UpdateAsync(fridge);
     }
-
 }

@@ -1,4 +1,3 @@
-﻿
 namespace Fridges.Domain.Enities.Recipe;
 
 public class Recipe

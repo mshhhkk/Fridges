@@ -1,18 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Fridges.Application.DTOs;
 using Fridges.Application.Interfaces;
 using Fridges.Domain.Enities.Recipe;
-using Fridges.Domain.Enums;
 using Fridges.Persistance.Interfaces;
-using Fridges.Persistance.Repositories;
 
 namespace Fridges.Application.Services;
 
-public class RecipeService:IRecipeService
+public class RecipeService : IRecipeService
 {
     private readonly IRecipeRepository _recipeRepository;
     public RecipeService(IRecipeRepository recipeRepository)
@@ -37,7 +30,7 @@ public class RecipeService:IRecipeService
         var recipe = new Recipe
         {
             Id = Guid.NewGuid(),
-             title = dto.title,
+            title = dto.title,
             Instructions = dto.Instructions,
             RecipeProducts = dto.Products.Select(p => new RecipeProduct
             {
@@ -46,7 +39,6 @@ public class RecipeService:IRecipeService
                 unitType = p.UnitType
             }).ToList()
         };
-
         await _recipeRepository.AddAsync(recipe);
         return recipe;
     }
@@ -72,12 +64,12 @@ public class RecipeService:IRecipeService
              .ToList();
 
         await _recipeRepository.CheckRecipeProductsAsync(id, products);
-        await _recipeRepository.UpdateAsync(recipe); 
+        await _recipeRepository.UpdateAsync(recipe);
     }
 
-    public async Task<List<RecipeProduct>> GetRecipeProductsAsync(Guid id)
+    public async Task<List<RecipeProduct>> GetRecipeProductsByIdAsync(Guid id)
     {
         var products = await _recipeRepository.GetRecipeProductsByIdAsync(id);
         return products;
-    } 
+    }
 }

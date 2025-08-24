@@ -1,4 +1,4 @@
-﻿using Fridges.Persistance;
+using Fridges.Persistance;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,7 +11,7 @@ public static class ServiceCollectionExtensions
     {
         var connectionString = configuration.GetConnectionString("DefaultConnection");
         if (string.IsNullOrWhiteSpace(connectionString))
-            throw new InvalidOperationException("DefaultConnection is not configured.");
+        { throw new InvalidOperationException("DefaultConnection is not configured."); }
 
         services.AddDbContext<AppDbContext>(options =>
         {
@@ -27,6 +27,4 @@ public static class ServiceCollectionExtensions
 
         return services;
     }
-
-
 }

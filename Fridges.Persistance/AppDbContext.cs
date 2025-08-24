@@ -1,9 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Fridges.Domain.Enities;
 using Fridges.Domain.Enities.Products;
 using Fridges.Domain.Enities.Recipe;
-using Fridges.Domain.Enities;
 using Fridges.Domain.Enums;
-using System.Reflection.Emit;
+using Microsoft.EntityFrameworkCore;
 
 namespace Fridges.Persistance;
 
@@ -101,9 +100,9 @@ public class AppDbContext : DbContext
         var product3Id = Guid.Parse("a7e58b11-d61a-4df3-9cb3-2d1272a99115");
 
         builder.Entity<Product>().HasData(
-            new Product { Id = product1Id, Release = new DateOnly(2025, 7, 1), Expiration = new DateOnly(2025, 7, 20), Weight = 0.5f, IsFresh = true, FridgeId = FridgeId_2, ProductTypeId=3 },
-            new Product { Id = product2Id, Release = new DateOnly(2025, 7, 2), Expiration = new DateOnly(2025, 7, 18), Weight = 1.2f, IsFresh = true, FridgeId = FridgeId_1,ProductTypeId=4 },
-            new Product { Id = product3Id, Release = new DateOnly(2025, 7, 5), Expiration = new DateOnly(2025, 8, 1), Weight = 0.3f, IsFresh = true, FridgeId = FridgeId_2,ProductTypeId=11 }
+            new Product { Id = product1Id, Release = new DateOnly(2025, 7, 1), Expiration = new DateOnly(2025, 7, 20), Weight = 0.5f, IsFresh = true, FridgeId = FridgeId_2, ProductTypeId = 3 },
+            new Product { Id = product2Id, Release = new DateOnly(2025, 7, 2), Expiration = new DateOnly(2025, 7, 18), Weight = 1.2f, IsFresh = true, FridgeId = FridgeId_1, ProductTypeId = 4 },
+            new Product { Id = product3Id, Release = new DateOnly(2025, 7, 5), Expiration = new DateOnly(2025, 8, 1), Weight = 0.3f, IsFresh = true, FridgeId = FridgeId_2, ProductTypeId = 11 }
         );
 
         builder.Entity<MeatProducts>().HasData(
