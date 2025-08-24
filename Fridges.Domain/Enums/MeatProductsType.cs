@@ -1,5 +1,3 @@
-﻿
-
 namespace Fridges.Domain.Enums;
 
 public enum MeatProductsType
