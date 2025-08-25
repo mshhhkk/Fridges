@@ -16,39 +16,55 @@ public class FridgesController : Controller
     [HttpGet("{id}")]
     public async Task<ActionResult> GetFridgeInfoAsync(Guid id)
     {
-        var fridge = await _fridgeService.GetAsync(id);
-        return Ok(fridge);
+        var result = await _fridgeService.GetAsync(id);
+        if(!result.IsSuccess)
+            { return NotFound(result.Error); }
+        return Ok(result.Value);
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAllFridgesAsync()
     {
-        var fridges = await _fridgeService.GetAllAsync();
-        return Ok(fridges);
+        var result = await _fridgeService.GetAllAsync();
+
+        if (!result.IsSuccess)
+        { return NotFound(result.Error); }
+
+        return Ok(result.Value);
     }
 
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteFridgeAsync(Guid id)
     {
-        await _fridgeService.DeleteAsync(id);
+        var result = await _fridgeService.DeleteAsync(id);
+
+        if (!result.IsSuccess)
+        { return NotFound(result.Error); }
+
         return NoContent();
     }
 
     [HttpPost]
     public async Task<ActionResult> AddFridgeAsync([FromBody] FridgeDto fridgeDto)
     {
-        var addedFridge = await _fridgeService.AddAsync(fridgeDto);
+        var result = await _fridgeService.AddAsync(fridgeDto);
+
+        if (!result.IsSuccess)
+            { return BadRequest(result.Error); }
 
         return CreatedAtAction(
             nameof(GetFridgeInfoAsync),
-            new { id = addedFridge.Id },
-            addedFridge);
+            new { id = result.Value.Id },
+             result.Value);
     }
 
     [HttpPut("{id}")]
     public async Task<ActionResult> EditFridgeInfoAsync(Guid id, [FromBody] FridgeDto fridgeDto)
     {
-        await _fridgeService.EditAsync(id, fridgeDto);
-        return Ok();
+        var result = await _fridgeService.EditAsync(id, fridgeDto);
+        if (!result.IsSuccess)
+            { return BadRequest(result.Error); }
+
+        return Ok(result.Value);
     }
 }

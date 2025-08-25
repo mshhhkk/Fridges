@@ -73,4 +73,10 @@ public class FridgeRepository : IFridgeRepository
             .FirstOrDefaultAsync();
         return isFreezer;
     }
+
+    public async Task<int> GetCurrentProductsAmountByIdAsync(Guid id)
+    {
+        return await _context.Products.Where(p => p.FridgeId == id).CountAsync();
+
+    }
 }

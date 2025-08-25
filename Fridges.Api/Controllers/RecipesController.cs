@@ -1,3 +1,4 @@
+using Fridges.Application;
 using Fridges.Application.DTOs;
 using Fridges.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -7,51 +8,61 @@ namespace Fridges.Api.Controllers;
 [Route("api/[controller]")]
 public class RecipesController : Controller
 {
-    private readonly IRecipeService _service;
-    public RecipesController(IRecipeService service)
+    private readonly IRecipeService _recipeService;
+    public RecipesController(IRecipeService recipeService)
     {
-        _service = service;
+        _recipeService = recipeService;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAllRecipesAsync()
     {
-        var recipes = await _service.GetAllAsync();
-        return Ok(recipes);
+        var result = await _recipeService.GetAllAsync();
+        return Ok(result);
     }
 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetRecipeInfoAsync(Guid id)
     {
-        var recipe = await _service.GetAsync(id);
-        return Ok(recipe);
+        var result = await _recipeService.GetAsync(id);
+        if (!result.IsSuccess)
+            { return NotFound(result.Error); }
+        return Ok(result.Value);
     }
 
     [HttpPost]
     public async Task<IActionResult> AddRecipeAsync([FromBody] RecipeDto recipeDto)
     {
-        var newRecipe = await _service.AddAsync(recipeDto);
-        return CreatedAtAction(nameof(GetRecipeInfoAsync), new { id = newRecipe.Id }, newRecipe);
+        var result = await _recipeService.AddAsync(recipeDto);
+        if (!result.IsSuccess)
+        { return NotFound(result.Error); }
+        return CreatedAtAction(nameof(GetRecipeInfoAsync), new { id = result.Value.Id }, result.Value);
     }
 
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteRecipeAsync(Guid id)
     {
-        await _service.DeleteAsync(id);
+        var result = await _recipeService.DeleteAsync(id);
+        if (!result.IsSuccess)
+            { return BadRequest(result.Error); }
         return NoContent();
     }
 
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> EditRecipeAsync(Guid id, [FromBody] RecipeDto recipeDto)
     {
-        await _service.EditAsync(id, recipeDto);
-        return Ok();
+        var result = await _recipeService.EditAsync(id, recipeDto);
+        if (!result.IsSuccess)
+        { return BadRequest(result.Error); }
+        return Ok(result.Value);
     }
 
     [HttpGet("{id:guid}/products")]
     public async Task<IActionResult> GetRecipeProductsAsync(Guid id)
     {
-        var products = await _service.GetRecipeProductsByIdAsync(id);
-        return Ok(products);
+        var result = await _recipeService.GetRecipeProductsByIdAsync(id);
+        if (!result.IsSuccess)
+        { return BadRequest(result.Error); }
+        return Ok(result.Value);
     }
 }

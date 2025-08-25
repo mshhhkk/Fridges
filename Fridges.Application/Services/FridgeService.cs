@@ -14,35 +14,59 @@ public class FridgeService : IFridgeService
         _fridgesRepo = fridgeRepository;
     }
 
-    public async Task<List<Fridge>> GetAllAsync()
+    public async Task<Result<List<Fridge>>> GetAllAsync()
     {
         var fridges = await _fridgesRepo.GetAllAsync();
-        return fridges;
+
+        if(fridges == null)
+        {
+            return Result<List<Fridge>>.Failure("No fridges found");
+        }
+        else
+        {
+            return Result<List<Fridge>>.Success(fridges);
+        }    
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task<Result> DeleteAsync(Guid id)
     {
         var fridge = await _fridgesRepo.GetByIdAsync(id);
         if (fridge == null)
         {
-            throw new InvalidOperationException("Fridge doesn't exist!");
+            return Result.Failure($"Fridge with id {id} does't exist");
         }
-        await _fridgesRepo.DeleteAsync(id);
-
+        else
+        {
+            await _fridgesRepo.DeleteAsync(id);
+            return Result.Success();
+        }
     }
 
-    public async Task<Fridge> GetAsync(Guid id)
+    public async Task<Result<Fridge>> GetAsync(Guid id)
     {
         var fridge = await _fridgesRepo.GetByIdAsync(id);
         if (fridge == null)
         {
-            throw new InvalidOperationException("Fridge doesn't exist!");
+            return Result<Fridge>.Failure($"Fridge with id {id} does't exist");
         }
-        return fridge;
+        else
+        {
+            return Result<Fridge>.Success(fridge);
+        }
     }
 
-    public async Task<Fridge> AddAsync(FridgeDto dto)
+    public async Task<Result<Fridge>> AddAsync(FridgeDto dto)
     {
+        if(string.IsNullOrWhiteSpace(dto.Name))
+        {
+            return Result<Fridge>.Failure("The name field can not be empty");
+        }
+
+        if(dto.Capacity<1)
+        {
+            return Result<Fridge>.Failure("The capacity field can not be less than 0");
+        }
+
         var fridge = new Fridge
         {
             Id = Guid.NewGuid(),
@@ -50,23 +74,34 @@ public class FridgeService : IFridgeService
             IsFreezer = dto.IsFreezer,
             Name = dto.Name
         };
-
         await _fridgesRepo.AddAsync(fridge);
-        return fridge;
+        return Result<Fridge>.Success(fridge);
     }
 
-    public async Task EditAsync(Guid id, FridgeDto dto)
+    public async Task<Result<Fridge>> EditAsync(Guid id, FridgeDto dto)
     {
         var fridge = await _fridgesRepo.GetByIdAsync(id);
-        fridge.Id = id;
-        fridge.Name = dto.Name;
-        fridge.Capacity = dto.Capacity;
 
         if (fridge == null)
         {
-            throw new InvalidOperationException($"Fridge with id: {id} doesn't exist!");
+            return Result<Fridge>.Failure($"Fridge with id {id} does't exist");
         }
 
+        if (string.IsNullOrWhiteSpace(dto.Name))
+        {
+            return Result<Fridge>.Failure("The name field can not be empty");
+        }
+
+        if (dto.Capacity < 1)
+        {
+            return Result<Fridge>.Failure("The capacity field can not be less than 0");
+        }
+
+        fridge.Id = id;
+        fridge.Name = dto.Name;
+        fridge.Capacity = dto.Capacity;
         await _fridgesRepo.UpdateAsync(fridge);
+
+        return Result<Fridge>.Success(fridge);
     }
 }

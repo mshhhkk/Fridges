@@ -6,11 +6,11 @@ namespace Fridges.Application.Interfaces;
 
 public interface IProductService
 {
-    Task<List<Product>> GetAllAsync();
-    Task<Product> GetAsync(Guid id);
-    Task<Product> AddAsync(ProductDto dto);
-    Task EditAsync(Guid Id, EditProductDto dto);
-    Task DeleteAsync(Guid id);
-    Task<List<Recipe>> GetRecipesByIdAsync(Guid id);
-    Task<List<Product>> GetAllByCategoryAsync(ProductCategory productCategory);
+    Task<Result<List<Product>>> GetAllAsync();
+    Task<Result<Product>> GetAsync(Guid id);
+    Task<Result<Product>> AddAsync(ProductDto dto);
+    Task<Result<Product>> EditAsync(Guid Id, EditProductDto dto);
+    Task<Result> DeleteAsync(Guid id);
+    Task<Result<List<Recipe>>> GetRecipesByIdAsync(Guid id);
+    Task<Result<List<Product>>> GetAllByCategoryAsync(ProductCategory productCategory);
 }

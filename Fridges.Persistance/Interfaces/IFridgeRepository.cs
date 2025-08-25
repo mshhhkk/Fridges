@@ -12,4 +12,5 @@ public interface IFridgeRepository
     Task DeleteAsync(Guid id);
     Task<string> GetNameByIdAsync(Guid id);
     Task<bool?> IsFreezerByIdAsync(Guid id);
+    Task<int> GetCurrentProductsAmountByIdAsync(Guid id);
 }
