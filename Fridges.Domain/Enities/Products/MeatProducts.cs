@@ -9,7 +9,7 @@ public class MeatProducts
 
     public bool IsFrozen { get; set; }
     public MeatProductsType Type { get; set; }
-   
+
 }
 
 

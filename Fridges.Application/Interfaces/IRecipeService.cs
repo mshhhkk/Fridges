@@ -5,10 +5,10 @@ namespace Fridges.Application.Interfaces;
 
 public interface IRecipeService
 {
-    Task<List<Recipe>> GetAllAsync();
-    Task<Recipe> GetAsync(Guid id);
-    Task<Recipe> AddAsync(RecipeDto dto);
-    Task DeleteAsync(Guid id);
-    Task EditAsync(Guid id, RecipeDto dto);
-    Task<List<RecipeProduct>> GetRecipeProductsByIdAsync(Guid id);
+    Task<Result<List<Recipe>>> GetAllAsync();
+    Task<Result<Recipe>> GetAsync(Guid id);
+    Task<Result<Recipe>> AddAsync(RecipeDto dto);
+    Task<Result> DeleteAsync(Guid id);
+    Task<Result<Recipe>> EditAsync(Guid id, RecipeDto dto);
+    Task<Result<List<RecipeProduct>>> GetRecipeProductsByIdAsync(Guid id);
 }

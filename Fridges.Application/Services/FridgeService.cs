@@ -14,34 +14,44 @@ public class FridgeService : IFridgeService
         _fridgesRepo = fridgeRepository;
     }
 
-    public async Task<List<Fridge>> GetAllAsync()
+    public async Task<Result<List<Fridge>>> GetAllAsync()
     {
         var fridges = await _fridgesRepo.GetAllAsync();
-        return fridges;
+
+        if (fridges == null)
+        {
+            return Result<List<Fridge>>.Failure("No fridges found");
+        }
+
+        return Result<List<Fridge>>.Success(fridges);
+
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task<Result> DeleteAsync(Guid id)
     {
         var fridge = await _fridgesRepo.GetByIdAsync(id);
         if (fridge == null)
         {
-            throw new InvalidOperationException("Fridge doesn't exist!");
+            return Result.Failure($"Fridge with id {id} does't exist");
         }
+
         await _fridgesRepo.DeleteAsync(id);
 
+        return Result.Success();
     }
 
-    public async Task<Fridge> GetAsync(Guid id)
+    public async Task<Result<Fridge>> GetAsync(Guid id)
     {
         var fridge = await _fridgesRepo.GetByIdAsync(id);
         if (fridge == null)
         {
-            throw new InvalidOperationException("Fridge doesn't exist!");
+            return Result<Fridge>.Failure($"Fridge with id {id} does't exist");
         }
-        return fridge;
+
+        return Result<Fridge>.Success(fridge);
     }
 
-    public async Task<Fridge> AddAsync(FridgeDto dto)
+    public async Task<Result<Fridge>> AddAsync(FridgeDto dto)
     {
         var fridge = new Fridge
         {
@@ -52,21 +62,24 @@ public class FridgeService : IFridgeService
         };
 
         await _fridgesRepo.AddAsync(fridge);
-        return fridge;
+
+        return Result<Fridge>.Success(fridge);
     }
 
-    public async Task EditAsync(Guid id, FridgeDto dto)
+    public async Task<Result<Fridge>> EditAsync(Guid id, FridgeDto dto)
     {
         var fridge = await _fridgesRepo.GetByIdAsync(id);
+        if (fridge == null)
+        {
+            return Result<Fridge>.Failure($"Fridge with id {id} does't exist");
+        }
+
         fridge.Id = id;
         fridge.Name = dto.Name;
         fridge.Capacity = dto.Capacity;
 
-        if (fridge == null)
-        {
-            throw new InvalidOperationException($"Fridge with id: {id} doesn't exist!");
-        }
-
         await _fridgesRepo.UpdateAsync(fridge);
+
+        return Result<Fridge>.Success(fridge);
     }
 }
