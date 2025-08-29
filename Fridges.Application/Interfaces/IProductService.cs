@@ -8,7 +8,7 @@ public interface IProductService
 {
     Task<Result<List<Product>>> GetAllAsync();
     Task<Result<Product>> GetAsync(Guid id);
-    Task<Result<Product>> AddAsync(ProductDto dto);
+    Task<Result<Product>> AddAsync(AddProductDto dto);
     Task<Result<Product>> EditAsync(Guid Id, EditProductDto dto);
     Task<Result> DeleteAsync(Guid id);
     Task<Result<List<Recipe>>> GetRecipesByIdAsync(Guid id);

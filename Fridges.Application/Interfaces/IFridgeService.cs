@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using Fridges.Application.DTOs;
 using Fridges.Domain.Enities;
 namespace Fridges.Application.Interfaces;

@@ -1,6 +1,5 @@
 using Fridges.Application.DTOs;
 using Fridges.Application.Interfaces;
-using Fridges.Domain.Enities;
 using Fridges.Domain.Enities.Products;
 using Fridges.Domain.Enities.Recipe;
 using Fridges.Domain.Enums;
@@ -24,15 +23,12 @@ public class ProductService : IProductService
     public async Task<Result<List<Product>>> GetAllAsync()
     {
         var products = await _productRepository.GetAllAsync();
-
-        if(products==null)
+        if (products == null)
         {
             return Result<List<Product>>.Failure("No products found");
         }
-        else
-        {
-            return Result<List<Product>>.Success(products);
-        }
+
+        return Result<List<Product>>.Success(products);
     }
 
     public async Task<Result<Product>> GetAsync(Guid id)
@@ -42,49 +38,48 @@ public class ProductService : IProductService
         {
             return Result<Product>.Failure($"No product with {id} found");
         }
-        else
-        {
-            return Result<Product>.Success(product);
-        }
+
+        return Result<Product>.Success(product);
     }
 
-    public async Task<Result<Product>> AddAsync(ProductDto dto)
+    public async Task<Result<Product>> AddAsync(AddProductDto dto)
     {
-        if (dto.ProductTypeId <=0)
+        var fridge = await _fridgeRepository.GetByIdAsync(Guid.Parse(dto.FridgeId));
+        if (fridge == null)
         {
-            return Result<Product>.Failure("The productTypeId is required");
+            return Result<Product>.Failure("Fridge not found");
         }
 
-        if (dto.FridgeId==Guid.Empty)
-            { return Result<Product>.Failure("Product should be in the fridge"); }
-        var fridge = await _fridgeRepository.GetByIdAsync(dto.FridgeId);
+        var parsedFridgeId = Guid.Parse(dto.FridgeId);
+        var productAmount = await _fridgeRepository.GetCurrentProductsAmountByIdAsync(parsedFridgeId);
+        if (productAmount >= fridge.Capacity)
+        {
+            return Result<Product>.Failure("Fridge is full");
+        }
 
-        if(fridge == null)
-            { return Result<Product>.Failure("Fridge not found"); }
+        var parsedExpiration = DateOnly.Parse(dto.Expiration);
+        if (parsedExpiration <= DateOnly.FromDateTime(DateTime.UtcNow))
+        {
+            return Result<Product>.Failure("Expiration date should be in the future.");
+        }
 
-        var productAmount = await _fridgeRepository.GetCurrentProductsAmountByIdAsync(dto.FridgeId);
-        if(productAmount>=fridge.Capacity)
-        { return Result<Product>.Failure("Fridge is full"); }
-
-        if (dto.Weight <= 0)
-            { return Result<Product>.Failure("Weight should be more than 0"); }
-
-        if (dto.Expiration <= DateOnly.FromDateTime(DateTime.UtcNow))
-            { return Result<Product>.Failure("Expiration date should be in the future."); }
-
-        if (dto.Release >= dto.Expiration)
-            { return Result<Product>.Failure("Expiration should be later than release"); }
+        var parsedRelease = DateOnly.Parse(dto.Release);
+        if (parsedRelease >= parsedExpiration)
+        {
+            return Result<Product>.Failure("Expiration should be later than release");
+        }
 
         var product = new Product
         {
             Id = Guid.NewGuid(),
-            FridgeId = dto.FridgeId,
-            Release = dto.Release,
-            Expiration = dto.Expiration,
+            FridgeId = parsedFridgeId,
+            Release = parsedRelease,
+            Expiration = parsedExpiration,
             Weight = dto.Weight,
             IsFresh = dto.IsFresh,
             ProductTypeId = dto.ProductTypeId
         };
+
         await _productRepository.AddAsync(product);
         return Result<Product>.Success(product);
     }
@@ -96,30 +91,22 @@ public class ProductService : IProductService
         {
             return Result<Product>.Failure($"No product with {id} found");
         }
-        
-        if (dto.FridgeId == Guid.Empty)
-            { return Result<Product>.Failure("Product should be in the fridge"); }
-        var fridge = await _fridgeRepository.GetByIdAsync(dto.FridgeId);
+
+        var parsedFridgeId = Guid.Parse(dto.FridgeId);
+        var fridge = await _fridgeRepository.GetByIdAsync(parsedFridgeId);
 
         if (fridge == null)
-        { return Result<Product>.Failure("Fridge not found"); }
+        {
+            return Result<Product>.Failure("Fridge not found");
+        }
 
-        var productAmount = await _fridgeRepository.GetCurrentProductsAmountByIdAsync(dto.FridgeId);
+        var productAmount = await _fridgeRepository.GetCurrentProductsAmountByIdAsync(parsedFridgeId);
         if (productAmount >= fridge.Capacity)
-        { return Result<Product>.Failure("Fridge is full"); }
+        {
+            return Result<Product>.Failure("Fridge is full");
+        }
 
-        if (dto.Weight <= 0)
-        { return Result<Product>.Failure("Weight should be more than 0"); }
-
-        if (dto.Expiration <= DateOnly.FromDateTime(DateTime.UtcNow))
-        { return Result<Product>.Failure("Expiration date should be in the future."); }
-
-        if (dto.Release >= dto.Expiration)
-        { return Result<Product>.Failure("Expiration should be later than release"); }
-
-        product.FridgeId = dto.FridgeId;
-        product.Release = dto.Release;
-        product.Expiration = dto.Expiration;
+        product.FridgeId = parsedFridgeId;
         product.Weight = dto.Weight;
         product.IsFresh = dto.IsFresh;
         await _productRepository.UpdateAsync(product);
@@ -134,6 +121,7 @@ public class ProductService : IProductService
         {
             return Result.Failure($"No product with {id} found");
         }
+
         await _productRepository.DeleteAsync(id);
 
         return Result.Success();
@@ -148,18 +136,21 @@ public class ProductService : IProductService
         }
 
         var productType = await _productRepository.GetProductTypeIdAsync(id);
+
         var recipes = await _recipeRepository.GetAllByProductTypeIdAsync(productType);
+
         return Result<List<Recipe>>.Success(recipes);
     }
 
     public async Task<Result<List<Product>>> GetAllByCategoryAsync(ProductCategory productCategory)
     {
         if (!Enum.IsDefined(typeof(ProductCategory), productCategory))
-            {
-                return Result<List<Product>>.Failure("Invalid product category");
-            }
+        {
+            return Result<List<Product>>.Failure("Invalid product category");
+        }
 
         var products = await _productRepository.GetAllByCategoryAsync(productCategory);
+
         return Result<List<Product>>.Success(products);
     }
 }

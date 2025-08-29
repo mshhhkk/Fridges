@@ -1,18 +1,19 @@
-using System.Collections.Generic;
 using Fridges.Application.DTOs;
 using Fridges.Application.Interfaces;
-using Fridges.Domain.Enities.Products;
 using Fridges.Domain.Enities.Recipe;
 using Fridges.Persistance.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Fridges.Application.Services;
 
 public class RecipeService : IRecipeService
 {
     private readonly IRecipeRepository _recipeRepository;
-    public RecipeService(IRecipeRepository recipeRepository)
+    private readonly IProductTypeRepository _productTypeRepository;
+    public RecipeService(IRecipeRepository recipeRepository,IProductTypeRepository productTypeRepository)
     {
         _recipeRepository = recipeRepository;
+        _productTypeRepository = productTypeRepository;
     }
 
     public async Task<Result<List<Recipe>>> GetAllAsync()
@@ -22,16 +23,14 @@ public class RecipeService : IRecipeService
         {
             return Result<List<Recipe>>.Failure("No recipes found");
         }
-        else
-        {
-            return Result<List<Recipe>>.Success(recipes);
-        }
+
+        return Result<List<Recipe>>.Success(recipes);
     }
 
     public async Task<Result<Recipe>> GetAsync(Guid id)
     {
         var recipe = await _recipeRepository.GetByIdAsync(id);
-        if( recipe == null)
+        if (recipe == null)
         {
             return Result<Recipe>.Failure($"Fridge with {id} not found");
         }
@@ -40,17 +39,17 @@ public class RecipeService : IRecipeService
 
     public async Task<Result<Recipe>> AddAsync(RecipeDto dto)
     {
-        if (string.IsNullOrWhiteSpace(dto.Instructions))
+        var productTypeIds = dto.Products.Select(p => p.ProductTypeId).Distinct().ToList();
+     
+        var existingProdTypes = await _productTypeRepository.GetAllAsync();
+
+        foreach (var product in dto.Products)
         {
-             return Result<Recipe>.Failure("Instructions field should be filled");
-        }
-        if (string.IsNullOrWhiteSpace(dto.title))
-        {
-            return Result<Recipe>.Failure("Title field is required");
-        }
-        if (dto.Products == null)
-        {
-            return Result<Recipe>.Failure("Recipe should have products");
+            var exist = existingProdTypes.Contains(product.ProductTypeId);
+            if(!exist)
+            {
+                return Result<Recipe>.Failure($"Product with productTypeId {product.ProductTypeId} not found");
+            }
         }
 
         var recipe = new Recipe
@@ -73,11 +72,12 @@ public class RecipeService : IRecipeService
     public async Task<Result> DeleteAsync(Guid id)
     {
         var recipe = await _recipeRepository.GetByIdAsync(id);
-        if(recipe == null)
+        if (recipe == null)
         {
             return Result.Failure($"Recipe with {id} doesn't exist");
         }
         await _recipeRepository.DeleteAsync(id);
+
         return Result.Success();
     }
 
@@ -87,18 +87,6 @@ public class RecipeService : IRecipeService
         if (recipe == null)
         {
             return Result<Recipe>.Failure($"Recipe with {id} doesn't exist");
-        }
-        if (string.IsNullOrWhiteSpace(dto.Instructions))
-        {
-            return Result<Recipe>.Failure("Instructions field should be filled");
-        }
-        if (string.IsNullOrWhiteSpace(dto.title))
-        {
-            return Result<Recipe>.Failure("Title field is required");
-        }
-        if (dto.Products == null)
-        {
-            return Result<Recipe>.Failure("Recipe should have products");
         }
 
         recipe.title = dto.title;
@@ -115,6 +103,7 @@ public class RecipeService : IRecipeService
 
         await _recipeRepository.CheckRecipeProductsAsync(id, products);
         await _recipeRepository.UpdateAsync(recipe);
+
         return Result<Recipe>.Success(recipe);
     }
 
@@ -125,7 +114,9 @@ public class RecipeService : IRecipeService
         {
             return Result<List<RecipeProduct>>.Failure($"Recipe with {id} doesn't exist");
         }
+
         var products = await _recipeRepository.GetRecipeProductsByIdAsync(id);
+
         return Result<List<RecipeProduct>>.Success(products);
     }
 }

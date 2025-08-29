@@ -1,4 +1,9 @@
+using FluentValidation;
 using Fridges.Api.Extensions;
+using Fridges.Application.DTOs;
+using Fridges.Application.Validators.Fridges;
+using Fridges.Application.Validators.Products;
+using Fridges.Application.Validators.Recipes;
 using Fridges.Infrastructure.Extensions;
 
 namespace Fridges.Api;
@@ -8,7 +13,7 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-
+       
         builder.Services.AddServices();
 
         builder.Services.AddDatabase(builder.Configuration);

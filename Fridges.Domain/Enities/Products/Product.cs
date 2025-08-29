@@ -8,7 +8,7 @@ public class Product
     public Guid FridgeId { get; set; }
 
     public Fridge Fridge { get; set; }
-   
+
     public DateOnly Release { get; set; }
     public DateOnly Expiration { get; set; }
 
