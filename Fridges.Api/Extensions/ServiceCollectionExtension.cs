@@ -7,6 +7,7 @@ using Fridges.Application.Validators.Products;
 using Fridges.Application.Validators.Recipes;
 using Fridges.Persistance.Interfaces;
 using Fridges.Persistance.Repositories;
+using Fridges.Api.Exeptions;
 
 namespace Fridges.Api.Extensions;
 
@@ -27,7 +28,8 @@ static public class ServiceCollectionExtension
         services.AddScoped<IRecipeService,RecipeService>();
         services.AddScoped<IRecipeRepository, RecipeRepository>();
         services.AddScoped<IProductTypeRepository, ProductTypeRepository>();
-
+        services.AddExceptionHandler<GlobalExeptionHandler>();
+        services.AddProblemDetails();
         return services;
     }
 }

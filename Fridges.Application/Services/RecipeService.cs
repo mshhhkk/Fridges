@@ -34,6 +34,7 @@ public class RecipeService : IRecipeService
         {
             return Result<Recipe>.Failure($"Fridge with {id} not found");
         }
+
         return Result<Recipe>.Success(recipe);
     }
 
@@ -64,6 +65,7 @@ public class RecipeService : IRecipeService
                 unitType = p.UnitType
             }).ToList()
         };
+
         await _recipeRepository.AddAsync(recipe);
 
         return Result<Recipe>.Success(recipe);
@@ -76,6 +78,7 @@ public class RecipeService : IRecipeService
         {
             return Result.Failure($"Recipe with {id} doesn't exist");
         }
+
         await _recipeRepository.DeleteAsync(id);
 
         return Result.Success();
@@ -87,6 +90,19 @@ public class RecipeService : IRecipeService
         if (recipe == null)
         {
             return Result<Recipe>.Failure($"Recipe with {id} doesn't exist");
+        }
+
+        var productTypeIds = dto.Products.Select(p => p.ProductTypeId).Distinct().ToList();
+
+        var existingProdTypes = await _productTypeRepository.GetAllAsync();
+
+        foreach (var product in dto.Products)
+        {
+            var exist = existingProdTypes.Contains(product.ProductTypeId);
+            if (!exist)
+            {
+                return Result<Recipe>.Failure($"Product with productTypeId {product.ProductTypeId} not found");
+            }
         }
 
         recipe.title = dto.title;
@@ -102,6 +118,7 @@ public class RecipeService : IRecipeService
              .ToList();
 
         await _recipeRepository.CheckRecipeProductsAsync(id, products);
+
         await _recipeRepository.UpdateAsync(recipe);
 
         return Result<Recipe>.Success(recipe);
